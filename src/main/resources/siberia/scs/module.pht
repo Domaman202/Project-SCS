@@ -1,0 +1,6 @@
+(module
+    (name "siberia/scs")
+    (version "1.0.0")
+    (author "DomamaN202")
+    (deps ["pht"])
+    (class "ru.DmN.scs.SCS"))
