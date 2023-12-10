@@ -26,25 +26,30 @@ class Laxer(val text: String) {
     }
 
     inner class Context(var i: Int) {
-        fun parse(line: Int, offset: Int): NodeElement {
-            if (text[i] == '\'') {
-                val name = parseName()
-                return NodeNamedElement(
-                    Token.operation(line, "named"),
-                    offset,
-                    name,
-                    if (checkMap())
-                        parseMap(line, offset)
-                    else if (checkArray())
-                        parseArray(line, offset)
-                    else {
-                        i--
-                        parseVal(line, offset)
-                    }
-                )
+        fun parse(line: Int, offset: Int): NodeElement =
+            when (text[i]) {
+                '\'' -> {
+                    val name = parseName()
+                    NodeNamedElement(
+                        Token.operation(line, "named"),
+                        offset,
+                        name,
+                        parseUnnamed(line, offset)
+                    )
+                }
+                ':' -> parseUnnamed(line, offset)
+                else -> parseValue(line, offset)
             }
-            return parseVal(line, offset)
-        }
+
+        fun parseUnnamed(line: Int, offset: Int): NodeElement =
+            if (checkMap())
+                parseMap(line, offset)
+            else if (checkArray())
+                parseArray(line, offset)
+            else {
+                i--
+                parseVal(line, offset)
+            }
 
         private fun parseArray(line: Int, offset: Int): NodeElement =
             NodeLazyArray(Token.operation(line, "array"), offset, this@Laxer, calcArraySize(line, offset))

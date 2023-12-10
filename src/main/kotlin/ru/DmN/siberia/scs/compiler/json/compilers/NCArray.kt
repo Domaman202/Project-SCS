@@ -7,13 +7,18 @@ import ru.DmN.phtx.pcl.compiler.json.utils.with
 import ru.DmN.siberia.Compiler
 import ru.DmN.siberia.compiler.ctx.CompilationContext
 import ru.DmN.siberia.compilers.INodeCompiler
+import ru.DmN.siberia.scs.ast.INodeArray
 
 object NCArray : INodeCompiler<NodeLazyArray> {
     override fun compile(node: NodeLazyArray, compiler: Compiler, ctx: CompilationContext) {
+        compile('[', ']', node, compiler, ctx)
+    }
+
+    fun compile(open: Char, close: Char, node: INodeArray, compiler: Compiler, ctx: CompilationContext) {
         val out = ctx.out
         val indent = ctx.indent
         //
-        out.append('[')
+        out.append(open)
         if (node.size > 0) {
             var i = 0
             node.forEach {
@@ -24,6 +29,6 @@ object NCArray : INodeCompiler<NodeLazyArray> {
                 else out.append('\n').append("\t".repeat(indent))
             }
         }
-        out.append(']')
+        out.append(close)
     }
 }
