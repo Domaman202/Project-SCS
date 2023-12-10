@@ -20,12 +20,11 @@ object Test {
     }
 
     private fun compileToJson() {
-        val ctx = CompilationContext.base().apply {
-            this.loadedModules += SCS // todo: CompilationContext.of(PCL)
+        val ctx = CompilationContext.of(SCS).apply {
             this.out = StringBuilder()
             this.indent = 1
         }
-        val compiler = Compiler(TypesProvider.java()) // todo: какой ещё провайдер типов?! мы конфиги конвертируем >.>
+        val compiler = Compiler(TypesProvider.void())
         compiler.finalizers["test/json-output"] = Runnable {
             File("dump").mkdir()
             File("dump/test.json").writeText("{\n\t${ctx.out}\n}")
