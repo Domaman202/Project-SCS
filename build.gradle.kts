@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.21"
+    `maven-publish`
 }
 
 group = "ru.DmN.scs"
@@ -7,10 +8,11 @@ version = "1.0.0"
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
-    implementation(project("Project-Siberia"))
+    implementation("ru.DmN.siberia:Project-Siberia:1.5.5")
     implementation(kotlin("reflect"))
     implementation("org.ow2.asm:asm:9.5")
     implementation("org.ow2.asm:asm-tree:9.5")
@@ -35,5 +37,24 @@ tasks {
             val contents = configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) } + sourcesMain.output
             from(contents)
         })
+    }
+
+    java {
+        withSourcesJar()
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = project.group as String
+            artifactId = "Project-SCS"
+            version = project.version as String
+            from(components["java"])
+        }
     }
 }
