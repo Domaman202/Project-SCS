@@ -3,7 +3,7 @@ plugins {
     `maven-publish`
 }
 
-group = "ru.DmN.scs"
+group = "ru.DmN.siberia"
 version = "1.0.0"
 
 repositories {
